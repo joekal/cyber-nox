@@ -13,8 +13,33 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 from pathlib import Path
 import os
 
+
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Charger manuellement les variables depuis le fichier .env (si présent)
+# Ce loader n'utilise pas python-dotenv et n'écrase pas les variables d'environnement existantes.
+env_path = '/home/kalel/Documents/projet-cyber-nox/cybernox_project/.env'
+if os.path.exists(env_path):
+    try:
+        with open(env_path, 'r', encoding='utf-8') as f:
+            for raw in f:
+                line = raw.strip()
+                if not line or line.startswith('#'):
+                    continue
+                if '=' not in line:
+                    continue
+                key, val = line.split('=', 1)
+                key = key.strip()
+                val = val.strip()
+                # Retirer quotes si présentes
+                if (val.startswith('"') and val.endswith('"')) or (val.startswith("'") and val.endswith("'")):
+                    val = val[1:-1]
+                # Ne pas écraser une variable d'environnement déjà définie
+                os.environ.setdefault(key, val)
+    except Exception:
+        pass
 
 
 # Quick-start development settings - unsuitable for production
@@ -22,6 +47,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-qxwgm2+w=!jh@u)2zaoxpxp5-=^mk(0v%v)&#(+fybg(05leeo'
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-qxwgm2+w=!jh@u)2zaoxpxp5-=^mk(0v%v)&#(+fybg(05leeo')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -139,5 +165,5 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'kalalajonathan297@gmail.com'
-EMAIL_HOST_PASSWORD = 'znvf znms mwpk nkrn'  # Utilisez un mot de passe d'application pour Gmail
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', 'kalalajonathan297@gmail.com')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')  # Utilisez un mot de passe d'application pour Gmail
