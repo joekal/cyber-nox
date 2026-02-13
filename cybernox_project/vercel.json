@@ -1,0 +1,16 @@
+{
+    "builds": [
+        {
+            "src": "cybernox_project/wsgi.py",
+            "use": "@vercel/python",
+            "config": {
+                "maxLambdaSize": "50mb", "runtime": "python3.13.11"
+            }
+        }
+    ],
+    "routes": [
+        {
+            "src": "/(.*)",
+            "dest": "cybernox_project/wsgi.py"      
+}   ]
+}   
