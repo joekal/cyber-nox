@@ -1,0 +1,578 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CYBER-NOX | Cybersécurité & Innovation Digitale</title>
+    <meta name="description" content="Protection des systèmes d'information et transformation numérique en RDC et en Afrique.">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Configuration Tailwind -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        slate: {
+                            850: '#1e293b',
+                            900: '#0f172a',
+                            950: '#020617',
+                        },
+                        cyan: {
+                            450: '#22d3ee',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <style>
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #020617;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #22d3ee;
+        }
+
+        .bg-grid {
+            background-size: 40px 40px;
+            background-image: linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+                              linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+        }
+        
+        /* Animation Classes */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.5, 0, 0, 1);
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Navbar Link Underline Animation */
+        .nav-link {
+            position: relative;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -4px;
+            left: 0;
+            background-color: #22d3ee;
+            transition: width 0.3s ease;
+        }
+        .nav-link:hover::after,
+        .nav-link.active-link::after {
+            width: 100%;
+        }
+
+        /* Scroll Progress Bar */
+        #scroll-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            background: linear-gradient(to right, #22d3ee, #3b82f6);
+            z-index: 100;
+            width: 0%;
+            transition: width 0.1s;
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-200 font-sans selection:bg-cyan-500 selection:text-white overflow-x-hidden">
+
+    <!-- Scroll Progress Bar -->
+    <div id="scroll-progress"></div>
+
+    <!-- Navigation -->
+    <nav id="navbar" class="fixed w-full z-50 transition-all duration-300 bg-transparent py-4">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16 bg-slate-900/80 backdrop-blur-md rounded-2xl border border-slate-800 px-6 shadow-lg shadow-black/20">
+                <!-- Logo -->
+                <div class="flex-shrink-0 flex items-center cursor-pointer" onclick="location.href='#home'">
+                    <i class="ph-fill ph-shield-check text-3xl text-cyan-400 mr-2"></i>
+                    <span class="text-xl font-bold tracking-tighter text-white">
+                        CYBER<span class="text-cyan-400">-NOX</span>
+                    </span>
+                </div>
+
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex space-x-8">
+                    <a href="#home" class="nav-link text-sm font-medium hover:text-cyan-400 transition-colors">Accueil</a>
+                    <a href="#expertise" class="nav-link text-sm font-medium hover:text-cyan-400 transition-colors">Services</a>
+                    <a href="#projects" class="nav-link text-sm font-medium hover:text-cyan-400 transition-colors">Réalisations</a>
+                    <a href="#team" class="nav-link text-sm font-medium hover:text-cyan-400 transition-colors">L'Équipe</a>
+                    <a href="#contact" class="px-4 py-2 text-sm font-bold text-slate-900 bg-cyan-400 rounded-lg hover:bg-cyan-300 transition-all shadow-lg shadow-cyan-400/20 hover:scale-105 active:scale-95">Contact</a>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden flex items-center">
+                    <button id="mobile-menu-btn" class="text-slate-300 hover:text-white focus:outline-none">
+                        <i class="ph ph-list text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden absolute top-24 left-0 w-full px-4 z-50">
+            <div class="bg-slate-900/95 backdrop-blur-xl border border-slate-800 rounded-xl p-4 space-y-3 shadow-2xl transform transition-all duration-300 origin-top scale-y-100">
+                <a href="#home" class="block px-3 py-2 rounded-md hover:bg-slate-800 text-slate-300">Accueil</a>
+                <a href="#expertise" class="block px-3 py-2 rounded-md hover:bg-slate-800 text-slate-300">Services</a>
+                <a href="#projects" class="block px-3 py-2 rounded-md hover:bg-slate-800 text-slate-300">Réalisations</a>
+                <a href="#team" class="block px-3 py-2 rounded-md hover:bg-slate-800 text-slate-300">L'Équipe</a>
+                <a href="#contact" class="block px-3 py-2 rounded-md bg-cyan-600/20 text-cyan-400 font-bold">Contactez-nous</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden min-h-screen flex items-center section-spy">
+        <div class="absolute inset-0 -z-10 bg-grid"></div>
+        <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-cyan-500/10 rounded-full blur-[100px] -z-10 animate-pulse-slow"></div>
+        <div class="absolute bottom-0 right-0 w-[500px] h-[500px] bg-blue-600/10 rounded-full blur-[120px] -z-10 animate-pulse-slow"></div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+            <div class="reveal inline-flex items-center px-4 py-2 rounded-full bg-cyan-950/50 border border-cyan-500/30 text-cyan-400 text-xs font-bold uppercase tracking-wider mb-8 hover:bg-cyan-900/50 transition-colors cursor-default">
+                <span class="w-2 h-2 rounded-full bg-cyan-400 mr-2 animate-pulse"></span>
+                Entreprise Agréée - RDC
+            </div>
+            
+            <h1 class="reveal text-4xl md:text-6xl lg:text-7xl font-extrabold tracking-tight text-white mb-6 leading-tight" style="transition-delay: 100ms;">
+                Sécurité Avancée & <br>
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">Solutions Digitales</span>
+            </h1>
+            
+            <p class="reveal mt-6 max-w-2xl mx-auto text-lg md:text-xl text-slate-400 mb-10 leading-relaxed" style="transition-delay: 200ms;">
+                <strong>CYBER-NOX</strong> est votre partenaire de confiance en RDC pour la transformation numérique. 
+                Nous allions expertise en cybersécurité et développement web de pointe.
+            </p>
+            
+            <div class="reveal flex flex-col sm:flex-row justify-center gap-4" style="transition-delay: 300ms;">
+                <a href="#contact" class="px-8 py-4 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold rounded-xl transition-all duration-300 transform hover:-translate-y-1 shadow-lg shadow-cyan-500/20 flex items-center justify-center group">
+                    Demander un devis
+                    <i class="ph-bold ph-arrow-right ml-2 group-hover:translate-x-1 transition-transform"></i>
+                </a>
+                <a href="#projects" class="px-8 py-4 bg-slate-800/50 hover:bg-slate-800 border border-slate-700 hover:border-slate-600 text-white font-semibold rounded-xl transition-all duration-300 flex items-center justify-center">
+                    Voir nos réalisations
+                </a>
+            </div>
+
+            <!-- Floating Abstract Element -->
+            <div class="absolute top-1/2 right-10 hidden lg:block animate-float opacity-20 pointer-events-none">
+                <i class="ph-duotone ph-shield-check text-9xl text-cyan-500"></i>
+            </div>
+            <div class="absolute bottom-10 left-10 hidden lg:block animate-float opacity-20 pointer-events-none" style="animation-delay: 2s;">
+                <i class="ph-duotone ph-code text-9xl text-blue-500"></i>
+            </div>
+        </div>
+    </section>
+
+    <!-- Expertise Details (Services) -->
+    <section id="expertise" class="py-24 bg-slate-900/50 relative section-spy">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16 reveal">
+                <h2 class="text-sm text-cyan-400 font-bold tracking-widest uppercase mb-2">Nos Services</h2>
+                <h3 class="text-3xl md:text-4xl font-bold text-white">Une Offre Complète à 360°</h3>
+                <p class="mt-4 text-slate-400 max-w-2xl mx-auto">
+                    De l'analyse de risques au déploiement d'applications, nous couvrons l'ensemble de vos besoins technologiques.
+                </p>
+            </div>
+
+            <!-- Pôle Cybersécurité -->
+            <div class="mb-16">
+                <div class="flex items-center mb-8 border-b border-slate-800 pb-4 reveal">
+                    <i class="ph-duotone ph-shield-warning text-3xl text-red-500 mr-3"></i>
+                    <h4 class="text-2xl font-bold text-white">Pôle Cybersécurité</h4>
+                </div>
+                <div class="grid md:grid-cols-3 gap-6">
+                    <!-- Service 1 -->
+                    <div class="bg-slate-900 border border-slate-800 p-6 rounded-xl hover:shadow-lg hover:shadow-red-500/10 hover:-translate-y-2 transition-all duration-300 reveal" style="transition-delay: 100ms;">
+                        <div class="w-10 h-10 bg-red-500/10 rounded-lg flex items-center justify-center mb-4 text-red-500">
+                            <i class="ph-fill ph-magnifying-glass text-xl"></i>
+                        </div>
+                        <h5 class="text-lg font-bold text-white mb-2">Audits & Pentests</h5>
+                        <p class="text-slate-400 text-sm">Tests d'intrusion (Black/White box) et audit complet de votre infrastructure pour identifier les failles.</p>
+                    </div>
+                    <!-- Service 2 -->
+                    <div class="bg-slate-900 border border-slate-800 p-6 rounded-xl hover:shadow-lg hover:shadow-red-500/10 hover:-translate-y-2 transition-all duration-300 reveal" style="transition-delay: 200ms;">
+                        <div class="w-10 h-10 bg-red-500/10 rounded-lg flex items-center justify-center mb-4 text-red-500">
+                            <i class="ph-fill ph-lock-key text-xl"></i>
+                        </div>
+                        <h5 class="text-lg font-bold text-white mb-2">Protection des Données</h5>
+                        <p class="text-slate-400 text-sm">Mise en place de politiques de sécurité strictes et conformité aux normes internationales.</p>
+                    </div>
+                    <!-- Service 3 -->
+                    <div class="bg-slate-900 border border-slate-800 p-6 rounded-xl hover:shadow-lg hover:shadow-red-500/10 hover:-translate-y-2 transition-all duration-300 reveal" style="transition-delay: 300ms;">
+                        <div class="w-10 h-10 bg-red-500/10 rounded-lg flex items-center justify-center mb-4 text-red-500">
+                            <i class="ph-fill ph-graduation-cap text-xl"></i>
+                        </div>
+                        <h5 class="text-lg font-bold text-white mb-2">Formation & Sensibilisation</h5>
+                        <p class="text-slate-400 text-sm">Formation de vos équipes pour renforcer le "pare-feu humain" face au phishing et autres menaces.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pôle Développement -->
+            <div>
+                <div class="flex items-center mb-8 border-b border-slate-800 pb-4 reveal">
+                    <i class="ph-duotone ph-code text-3xl text-cyan-400 mr-3"></i>
+                    <h4 class="text-2xl font-bold text-white">Pôle Développement Digital</h4>
+                </div>
+                <div class="grid md:grid-cols-3 gap-6">
+                    <!-- Service 1 -->
+                    <div class="bg-slate-900 border border-slate-800 p-6 rounded-xl hover:shadow-lg hover:shadow-cyan-500/10 hover:-translate-y-2 transition-all duration-300 reveal" style="transition-delay: 100ms;">
+                        <div class="w-10 h-10 bg-cyan-500/10 rounded-lg flex items-center justify-center mb-4 text-cyan-400">
+                            <i class="ph-fill ph-laptop text-xl"></i>
+                        </div>
+                        <h5 class="text-lg font-bold text-white mb-2">Applications Web & Mobile</h5>
+                        <p class="text-slate-400 text-sm">Développement sur mesure avec les dernières technologies (React, Django, Flutter) pour des produits performants.</p>
+                    </div>
+                    <!-- Service 2 -->
+                    <div class="bg-slate-900 border border-slate-800 p-6 rounded-xl hover:shadow-lg hover:shadow-cyan-500/10 hover:-translate-y-2 transition-all duration-300 reveal" style="transition-delay: 200ms;">
+                        <div class="w-10 h-10 bg-cyan-500/10 rounded-lg flex items-center justify-center mb-4 text-cyan-400">
+                            <i class="ph-fill ph-paint-brush-broad text-xl"></i>
+                        </div>
+                        <h5 class="text-lg font-bold text-white mb-2">Branding Numérique</h5>
+                        <p class="text-slate-400 text-sm">Création de CV digitaux, portfolios interactifs et identités visuelles pour professionnels.</p>
+                    </div>
+                    <!-- Service 3 -->
+                    <div class="bg-slate-900 border border-slate-800 p-6 rounded-xl hover:shadow-lg hover:shadow-cyan-500/10 hover:-translate-y-2 transition-all duration-300 reveal" style="transition-delay: 300ms;">
+                        <div class="w-10 h-10 bg-cyan-500/10 rounded-lg flex items-center justify-center mb-4 text-cyan-400">
+                            <i class="ph-fill ph-users-three text-xl"></i>
+                        </div>
+                        <h5 class="text-lg font-bold text-white mb-2">Régie IT (Outsourcing)</h5>
+                        <p class="text-slate-400 text-sm">Mise à disposition de développeurs qualifiés pour renforcer vos équipes temporairement.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects Section (Avec Images) -->
+    <section id="projects" class="py-20 bg-slate-950 relative overflow-hidden section-spy">
+        <!-- Background decoration -->
+        <div class="absolute right-0 top-20 w-1/3 h-full bg-slate-900/30 skew-x-12 -z-10"></div>
+        
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row justify-between items-end mb-12 reveal">
+                <div class="mb-6 md:mb-0">
+                    <h2 class="text-sm text-cyan-400 font-bold tracking-widest uppercase mb-2">Portfolio</h2>
+                    <h3 class="text-3xl font-bold text-white">Nos Réalisations Récentes</h3>
+                </div>
+                <a href="#contact" class="text-slate-400 hover:text-white flex items-center transition-colors group">
+                    Voir tous les projets <i class="ph-bold ph-arrow-right ml-2 group-hover:translate-x-1 transition-transform"></i>
+                </a>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Project 1 -->
+                <div class="group relative overflow-hidden rounded-2xl bg-slate-900 border border-slate-800 reveal" style="transition-delay: 100ms;">
+                    <div class="h-48 bg-slate-800 relative overflow-hidden">
+                        <!-- Image réelle -->
+                        <img src="https://images.unsplash.com/photo-1563013544-824ae1b704d3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Fintech K-Pay" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-80 group-hover:opacity-100">
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-transparent z-10"></div>
+                        <div class="absolute top-4 right-4 bg-red-500/90 text-white text-xs font-bold px-3 py-1 rounded-full z-20 shadow-lg">
+                            Audit Sécurité
+                        </div>
+                    </div>
+                    <div class="p-6 relative z-20 -mt-12">
+                        <div class="bg-slate-900/95 backdrop-blur p-5 rounded-xl shadow-xl border border-slate-800 transition-transform duration-300 group-hover:-translate-y-2">
+                            <h4 class="text-xl font-bold text-white mb-2">Fintech K-Pay</h4>
+                            <p class="text-slate-400 text-sm mb-4">Audit complet de l'infrastructure bancaire et tests d'intrusion avant lancement.</p>
+                            <div class="flex items-center text-xs text-green-400 font-mono">
+                                <i class="ph-fill ph-check-circle mr-1"></i> 100% Sécurisé
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project 2 -->
+                <div class="group relative overflow-hidden rounded-2xl bg-slate-900 border border-slate-800 reveal" style="transition-delay: 200ms;">
+                    <div class="h-48 bg-slate-800 relative overflow-hidden">
+                         <!-- Image réelle -->
+                        <img src="https://images.unsplash.com/photo-1661956602116-aa6865609028?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Marketplace RDC-Export" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-80 group-hover:opacity-100">
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-transparent z-10"></div>
+                        <div class="absolute top-4 right-4 bg-cyan-500/90 text-slate-900 text-xs font-bold px-3 py-1 rounded-full z-20 shadow-lg">
+                            Web App
+                        </div>
+                    </div>
+                    <div class="p-6 relative z-20 -mt-12">
+                        <div class="bg-slate-900/95 backdrop-blur p-5 rounded-xl shadow-xl border border-slate-800 transition-transform duration-300 group-hover:-translate-y-2">
+                            <h4 class="text-xl font-bold text-white mb-2">Marketplace RDC-Export</h4>
+                            <p class="text-slate-400 text-sm mb-4">Plateforme e-commerce multi-vendeurs avec paiements mobiles intégrés.</p>
+                            <div class="flex items-center text-xs text-cyan-400 font-mono">
+                                <i class="ph-fill ph-code mr-1"></i> Django / React
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project 3 -->
+                <div class="group relative overflow-hidden rounded-2xl bg-slate-900 border border-slate-800 reveal" style="transition-delay: 300ms;">
+                    <div class="h-48 bg-slate-800 relative overflow-hidden">
+                         <!-- Image réelle -->
+                        <img src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Gestion Hospitalière" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-80 group-hover:opacity-100">
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-transparent z-10"></div>
+                        <div class="absolute top-4 right-4 bg-purple-500/90 text-white text-xs font-bold px-3 py-1 rounded-full z-20 shadow-lg">
+                            Digitalisation
+                        </div>
+                    </div>
+                    <div class="p-6 relative z-20 -mt-12">
+                        <div class="bg-slate-900/95 backdrop-blur p-5 rounded-xl shadow-xl border border-slate-800 transition-transform duration-300 group-hover:-translate-y-2">
+                            <h4 class="text-xl font-bold text-white mb-2">Gestion Hospitalière</h4>
+                            <p class="text-slate-400 text-sm mb-4">Digitalisation des dossiers patients pour une clinique à Kinshasa.</p>
+                            <div class="flex items-center text-xs text-purple-400 font-mono">
+                                <i class="ph-fill ph-trend-up mr-1"></i> -40% temps d'attente
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Team Section (Avec Images) -->
+    <section id="team" class="py-20 bg-slate-900 border-t border-slate-800 section-spy">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16 reveal">
+                <h2 class="text-3xl font-bold text-white mb-4">Le Fondateur</h2>
+                <p class="text-slate-400 max-w-2xl mx-auto">Un expert certifié reconnus dans l'industrie.</p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Member 1 -->
+                <div class="bg-slate-950 rounded-2xl p-8 text-center border border-slate-800 hover:border-cyan-500 transition-all shadow-xl hover:-translate-y-2 duration-300 md:col-start-2 md:col-span-1 reveal" style="transition-delay: 100ms;">
+                    <div class="w-32 h-32 mx-auto rounded-full mb-6 p-1 border-2 border-cyan-500/30 relative">
+                         <!-- Image réelle -->
+                        <img src="{% static 'img/image.png' %}" alt="Jonathan Kalala" class="w-full h-full object-cover rounded-full">
+                        <div class="absolute bottom-0 right-0 bg-slate-900 rounded-full p-1">
+                            <i class="ph-fill ph-seal-check text-cyan-400 text-xl"></i>
+                        </div>
+                    </div>
+                    <h3 class="text-xl font-bold text-white">Jonathan Kalala</h3>
+                    <p class="text-cyan-400 text-sm font-semibold mb-2">Fondateur & Expert Cyber</p>
+                    
+                    <div class="flex justify-center gap-2 mb-4 flex-wrap">
+                        <span class="px-2 py-1 bg-slate-800 text-xs text-slate-300 rounded border border-slate-700">AWS</span>
+                        <span class="px-2 py-1 bg-slate-800 text-xs text-slate-300 rounded border border-slate-700">GOOGLE</span>
+                        <span class="px-2 py-1 bg-slate-800 text-xs text-slate-300 rounded border border-slate-700">CISCO</span>
+                    </div>
+
+                    <p class="text-slate-400 text-sm mb-6">Expert en architecture système et cybersécurité offensive. Il garantit l'intégrité de vos données.</p>
+                    <div class="flex justify-center space-x-4">
+                        <a href="#" class="text-slate-500 hover:text-cyan-400 transition-colors"><i class="ph-fill ph-linkedin-logo text-2xl"></i></a>
+                        <a href="#" class="text-slate-500 hover:text-cyan-400 transition-colors"><i class="ph-fill ph-twitter-logo text-2xl"></i></a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-20 bg-slate-950 section-spy">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 reveal">
+            <div class="bg-slate-900 rounded-2xl p-8 md:p-12 border border-slate-800 shadow-2xl">
+                <div class="text-center mb-10">
+                    <h2 class="text-3xl font-bold text-white mb-4">Démarrons votre Projet</h2>
+                    <p class="text-slate-400">Prêt à sécuriser votre infrastructure ou à lancer votre solution web ?</p>
+                    
+                    <!-- Bloc d'affichage des messages Django (Succès/Erreur) -->
+                    {% if messages %}
+                        <div class="mt-6 space-y-2">
+                            {% for message in messages %}
+                            <div class="p-4 rounded-lg {% if message.tags == 'success' %}bg-green-500/20 text-green-400 border border-green-500/30{% else %}bg-red-500/20 text-red-400 border border-red-500/30{% endif %} flex items-center">
+                                {% if message.tags == 'success' %}<i class="ph-fill ph-check-circle mr-2"></i>{% else %}<i class="ph-fill ph-warning-circle mr-2"></i>{% endif %}
+                                {{ message }}
+                            </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- 
+                    FORMULAIRE CONNECTÉ À DJANGO
+                    1. method="POST" : Envoie les données au serveur
+                    2. action="" : Envoie à l'URL actuelle (la vue 'home')
+                    3. {% csrf_token %} : Sécurité obligatoire de Django
+                -->
+                <form method="POST" action="{% url 'home' %}#contact" class="space-y-6">
+                    {% csrf_token %}
+                    
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="name" class="block text-sm font-medium text-slate-400 mb-2">Nom complet</label>
+                            <input type="text" id="name" name="name" required class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:ring-2 focus:ring-cyan-500 focus:border-transparent outline-none transition-all">
+                        </div>
+                        <div>
+                            <label for="email" class="block text-sm font-medium text-slate-400 mb-2">Email professionnel</label>
+                            <input type="email" id="email" name="email" required class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:ring-2 focus:ring-cyan-500 focus:border-transparent outline-none transition-all">
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label for="subject" class="block text-sm font-medium text-slate-400 mb-2">Sujet</label>
+                        <select id="subject" name="subject" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:ring-2 focus:ring-cyan-500 focus:border-transparent outline-none transition-all">
+                            <option value="Audit">Demande d'Audit / Pentest</option>
+                            <option value="Dev">Développement Web / App</option>
+                            <option value="Formation">Formation</option>
+                            <option value="Autre">Autre</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="message" class="block text-sm font-medium text-slate-400 mb-2">Message</label>
+                        <textarea id="message" name="message" rows="4" required class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:ring-2 focus:ring-cyan-500 focus:border-transparent outline-none transition-all"></textarea>
+                    </div>
+
+                    <button type="submit" class="w-full bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-bold py-4 rounded-lg shadow-lg transform transition-all hover:-translate-y-1 hover:shadow-cyan-500/25">
+                        Envoyer le message
+                    </button>
+                </form>
+                
+                <div class="mt-10 pt-6 border-t border-slate-800 flex flex-col md:flex-row justify-between items-center text-sm text-slate-400">
+                    <div class="flex items-center mb-4 md:mb-0 hover:text-white transition-colors cursor-pointer">
+                        <i class="ph-fill ph-envelope-simple text-cyan-400 mr-2"></i>
+                        contact@cyber-nox.com
+                    </div>
+                    <div class="flex items-center">
+                        <i class="ph-fill ph-map-pin text-cyan-400 mr-2"></i>
+                        Kinshasa, RDC
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer (avec infos légales) -->
+    <footer class="bg-slate-950 py-12 border-t border-slate-900">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <div class="flex items-center justify-center mb-6">
+                <i class="ph-fill ph-shield-check text-3xl text-cyan-400 mr-2"></i>
+                <span class="text-xl font-bold tracking-tighter text-white">
+                    CYBER<span class="text-cyan-400">-NOX</span>
+                </span>
+            </div>
+            
+            <!-- Legal Info Block -->
+            <div class="text-slate-500 text-xs md:text-sm mb-6 space-y-1">
+                <p>Entreprise de droit congolais agréée par l'État.</p>
+                <p>
+                    <span class="font-mono bg-slate-900 px-2 py-1 rounded mx-1">RCCM : CD/KNG/RCCM/24-B-00000</span> | 
+                    <span class="font-mono bg-slate-900 px-2 py-1 rounded mx-1">ID. NAT. : 01-900-N00000X</span> | 
+                    <span class="font-mono bg-slate-900 px-2 py-1 rounded mx-1">N° Impôt : A0000000Z</span>
+                </p>
+            </div>
+
+            <p class="text-slate-600 text-xs border-t border-slate-900 pt-6 mt-6">
+                &copy; 2024 CYBER-NOX. Tous droits réservés. <br>
+                Sécurité - Innovation - Excellence
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile Menu Logic
+        const btn = document.getElementById('mobile-menu-btn');
+        const menu = document.getElementById('mobile-menu');
+        const navbar = document.getElementById('navbar');
+
+        btn.addEventListener('click', () => {
+            menu.classList.toggle('hidden');
+        });
+
+        // Scroll Header Logic
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 20) {
+                navbar.classList.add('py-0');
+                navbar.querySelector('div > div').classList.remove('bg-slate-900/80');
+                navbar.querySelector('div > div').classList.add('bg-slate-900/95');
+            } else {
+                navbar.classList.add('py-4');
+                navbar.querySelector('div > div').classList.add('bg-slate-900/80');
+                navbar.querySelector('div > div').classList.remove('bg-slate-900/95');
+            }
+        });
+
+        // Scroll Reveal Animation Logic (Intersection Observer)
+        const revealElements = document.querySelectorAll('.reveal');
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        revealElements.forEach(el => revealObserver.observe(el));
+
+        // Scroll Spy (Active Nav Link) logic
+        const sections = document.querySelectorAll('section');
+        const navLinks = document.querySelectorAll('.nav-link');
+        
+        window.addEventListener('scroll', () => {
+            let current = '';
+            
+            // Scroll Progress Bar
+            const scrollTotal = document.documentElement.scrollTop;
+            const heightTotal = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrollValue = (scrollTotal / heightTotal) * 100;
+            document.getElementById('scroll-progress').style.width = scrollValue + "%";
+
+            // Spy Sections
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (scrollY >= (sectionTop - sectionHeight / 3)) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active-link');
+                link.classList.remove('text-cyan-400');
+                link.classList.add('text-slate-300'); // Reset color
+
+                if (link.getAttribute('href').includes(current)) {
+                    link.classList.add('active-link');
+                    link.classList.add('text-cyan-400');
+                    link.classList.remove('text-slate-300');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
