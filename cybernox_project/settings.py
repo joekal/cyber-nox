@@ -52,7 +52,11 @@ SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-qxwgm2+w=!jh@u
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+# Autoriser les hôtes via la variable d'environnement `DJANGO_ALLOWED_HOSTS`
+# par défaut, permettre localhost et le domaine Vercel utilisé
+ALLOWED_HOSTS = os.environ.get(
+    'DJANGO_ALLOWED_HOSTS', 'localhost 127.0.0.1 cyber-nox.vercel.app'
+).split()
 
 
 # Application definition
